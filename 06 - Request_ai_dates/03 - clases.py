@@ -6,7 +6,7 @@ if os.system != 0: os.system('cls')
  #Ejemplo basico:
 class Coche:
     #  atributo de clase (comparte a todas las instancias)
-     tipo = "vehiculo de cuatro ruedas"
+     tipo = "4 ruedas"
     #  metodo especial que es el que construye el objeto
     #  se llama automaticamente este metodo cuando creas la instancia
      def __init__(self, marca, modelo, color):
@@ -14,9 +14,10 @@ class Coche:
          self.marca=marca
          self.modelo=modelo
          self.color=color
+         self.tipo
 
      def arrancar(self):
-         print(f"El coche {self.marca} {self.modelo} de color {self.color} arrancó.🚗")
+         print(f"El coche {self.marca} {self.modelo} de color {self.color} arrancó.🚗 y tipo {self.tipo}")
 
 mi_coche = Coche("Toyota", "Corolla", "rojo")
 

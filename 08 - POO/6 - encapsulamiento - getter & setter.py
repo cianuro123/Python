@@ -31,6 +31,9 @@ class Persona:
 # print(obj.get_nombre())
 
 # @property es una forma de crear un getter, setter y deleter de una manera mas sencilla y elegante.
+# un "getter" se utiliza para obtener el valor de un atributo privado 
+# un "setter" se utiliza para modificar el valor de un atributo privado
+# un "deleter" se utiliza para eliminar un atributo privado.
 class Persona:
     def __init__(self, nombre, edad):
         self.__nombre = nombre

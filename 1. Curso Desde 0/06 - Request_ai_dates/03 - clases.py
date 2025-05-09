@@ -60,5 +60,3 @@ prompt = "hola"
 api_key = os.getenv('API_KEY_HUGGING_FACE')
 ia_api = CALL_IA(api_key, url)
 ia_api.call(prompt)
-
-

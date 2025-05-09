@@ -11,7 +11,7 @@ if system != "clear":
 from groq import Groq  # type:ignore
 import os
 from dotenv import load_dotenv
-claves = load_dotenv('env')
+claves = load_dotenv('D:\CodeLibrary\Python\.env')
 OPENAI_KEY=os.getenv("OPENAI_KEY")
 API_KEY_GEMINI=os.getenv("API_KEY_GEMINI")
 API_KEY_HUGGING_FACE=os.getenv("API_KEY_HUGGING_FACE")
@@ -138,4 +138,3 @@ chat_completion = client.chat.completions.create(
     model="llama-3.3-70b-versatile",
 
 )
-

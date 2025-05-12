@@ -13,3 +13,5 @@ class Tazas:
 # taza1 = Tazas("5cm x 3cm", "rojo", "Vietnam")
 taza2 = Tazas("20cm x 40cm", "violeta", "China", "batman")
 taza2.servir("té")
+
+a = 18

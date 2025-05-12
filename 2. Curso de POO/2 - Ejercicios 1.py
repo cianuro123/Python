@@ -25,6 +25,7 @@ while True:
     else:
         print("No es la respuesta esperada. Reintentando...")
         continue
+
     
 
     

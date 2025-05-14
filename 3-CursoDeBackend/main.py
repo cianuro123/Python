@@ -1,6 +1,6 @@
 from sys import prefix
 import fastapi
-from routers import products, users
+from routers import products, users, basic_auth_users, jwt_auth_user
 from fastapi.staticfiles import StaticFiles #* -> Para importar objetos estaticos
 
 
@@ -8,8 +8,12 @@ app = fastapi.FastAPI(prefix="/root")  # * -> crea el objeto FastAPI
 
 # * Routers
 app.include_router(products.router)
-app.include_router(users.app)
+app.include_router(users.router)
+app.include_router(basic_auth_users.router)
+app.include_router(jwt_auth_user.router)
+
 app.mount("/static", StaticFiles(directory="static"), name="static")#* Primero el path, luego el nombre del directorio y el nombre
+
 
 @app.get("/")  # * -> Define la ruta raiz de la API
 async def root():

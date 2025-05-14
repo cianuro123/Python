@@ -44,7 +44,7 @@ class RestartServerHandler(FileSystemEventHandler):
 if __name__ == "__main__":
     # Cambiá `main:app` si tu archivo principal tiene otro nombre
     uvicorn_command = ["python", "-m", "uvicorn",
-                       "main:app", "--host", "127.0.0.1", "--port", "8000"]
+                       "main:app","--host", "127.0.0.1", "--port", "8000" ]
 
     event_handler = RestartServerHandler(uvicorn_command)
     observer = Observer()

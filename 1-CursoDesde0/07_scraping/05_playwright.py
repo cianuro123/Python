@@ -18,5 +18,3 @@ def test_get_started_link(page: Page):
     # Expects page to have a heading with the name of Installation.
     expect(page.get_by_role("link", name="soydalto")).to_be_visible()
 
-
-test_has_title(Page)

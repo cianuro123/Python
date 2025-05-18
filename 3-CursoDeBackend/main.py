@@ -1,4 +1,3 @@
-from sys import prefix
 import fastapi
 from routers import products, users, basic_auth_users, jwt_auth_user
 from fastapi.staticfiles import StaticFiles #* -> Para importar objetos estaticos

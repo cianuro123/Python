@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 
 ALGORITHM = "HS256"
-ACCES_TOKEN_DURATION= 10 #!este valor es alto para que no de error, datetime.now() no funciona correctamente
+ACCES_TOKEN_DURATION= 1 
 SECRET="$2a$12$RffjILLDEZZSiBWHzk7kyeWFFYQ/PJ8TeF7Ccw9vWgtUDcySdK"
 
 router=APIRouter() #* Crea la api del tipo APIRouter()
@@ -28,34 +28,39 @@ class User(BaseModel):#* Clase usuarios (sin password)
 class UserDB(User):#* Clase usuarios (con password)
     password:str
     
-
-users_db={"thiago1":{"username": "thiago1", #* "Base de datos" de usuarios
+#* "Base de datos" de usuarios
+users_db={ 
+    "thiago1":{"username": "thiago1",
     "fullname": "Thiago Pro Gamer",
     "email":"thiagopro@yahoo.net",
     "disabled":False,
-    "password":"$2a$12$krueOfMnErq4PiLUeR.U3uqwaAC498q0uAVifg7iheOUjcPaxf/7a"
+    "password":"$2a$12$krueOfMnErq4PiLUeR.U3uqwaAC498q0uAVifg7iheOUjcPaxf/7a" #Cacayculo
     },
     "thiago2":{"username": "thiago2",
     "fullname": "Thiago Pro Gamer XXX",
     "email":"thiagopros@yahoo.net",
     "disabled":False,
-    "password":"$2a$12$ynXaC0cQIi0BVlE7OD18meL4ynoEGxE2ffg444PKqsq7I0L7g86Va"
+    "password":"$2a$12$ynXaC0cQIi0BVlE7OD18meL4ynoEGxE2ffg444PKqsq7I0L7g86Va" #chupalagil
     },
     "thiago3":{"username": "thiago3",
     "fullname": "Thiago XXX Gamer",
     "email":"thiagosi@yahoo.net",
     "disabled":True,
-    "password":"$2a$12$hUnT6M/.pkrkS.D9Gr69ZubkXdpXIXO2lz4DROWMArle5VVRVQAPS"
+    "password":"$2a$12$hUnT6M/.pkrkS.D9Gr69ZubkXdpXIXO2lz4DROWMArle5VVRVQAPS" #Cacayculo
     }
 }
 
 
-@router.post("/login", status_code=200)
+@router.post("/login", status_code=200, tags="Login")
 async def login(form:OAuth2PasswordRequestForm = Depends()):#* Define la operacion Login 
     user_db = users_db.get(form.username)
     if not user_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado")
-
+    
+    date = datetime.now()
+    
+    exp = date + timedelta(minutes=ACCES_TOKEN_DURATION, hours=3) #!"hours=3" pq está atrasado 3 horas 
+    
     user_db = search_user_db(form.username)
         
     is_correct = crypt.verify(form.password, user_db.password)
@@ -65,24 +70,25 @@ async def login(form:OAuth2PasswordRequestForm = Depends()):#* Define la operaci
     
     access_token = {
         "sub":user_db.username,
-        "exp":datetime.now()+timedelta(hours=ACCES_TOKEN_DURATION)#! datetime.now() no da la hora correcta, está atrasado una hora aprox
+        "exp":exp 
     }
     
     
-    return {"access_token":jwt.encode(access_token, SECRET, algorithm=ALGORITHM)}
+    return {"access_token":jwt.encode(access_token, SECRET, algorithm=ALGORITHM), "token_type": "bearer"}
 
 async def auth_user(token:str = Depends(oauth2)): #* Define como verificar y autorizar usuarios
     exeption = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
-                            detail="Credenciales de autenticacion invalidas",
+                            detail=f"Credenciales de autenticacion invalidas",
                             headers={"www-Authenticate":"Bearer"})
-    
     try:
-        username = jwt.decode(token,SECRET, algorithms=ALGORITHM).get("sub")
+        access_token = jwt.decode(token,SECRET, algorithms=ALGORITHM)
+        username = access_token.get("sub")
         if username == None:
             raise exeption
-
     except JWTError as e:
-        raise [exeption, e]
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
+                            detail=f"{e}",
+                            headers={"www-Authenticate":"Bearer"})
     
     return search_user(username)
 
@@ -91,7 +97,7 @@ async def current_user(user:User = Depends(auth_user)): #*Verifica el estado del
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuario deshabilitado")
     return user
 
-@router.get("/users/me")
+@router.get("/users/me", tags="Users")
 async def me(user:User = Depends(current_user)): #* Define como devolver la info. del usuario
     return user 
 
